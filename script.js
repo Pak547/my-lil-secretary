@@ -1,49 +1,117 @@
 // Wrap all code that interacts with the DOM in a call to jQuery to ensure that
 // the code isn't run until the browser has finished rendering all the elements
 // in the html.
-const save = document.querySelectorAll(".saveBtn")
 const input = document.getElementsByName("textarea")
-
-var currentHour = dayjs().hour();
-var dateTime = $('#dateTime');
+const dateTime = $('#dateTime');
 
 function printDateTime(){
   var date = dayjs().format("dddd, MMMM D YYYY, h:mm:ss a") 
-  $('#dateTime').text(date);
+  dateTime.text(date);
 };
 printDateTime();
 
+// Array for each hour and empty string to input
+let eachTime = [
+  {
+    hour: "9 am",
+    event: ""
+  },
+  {
+    hour:"10 am",
+    event:""
+  },
+  {
+    hour:"11 am",
+    event:""
+  },
+  {
+    hour:"12 pm",
+    event:""
+  },
+  {
+    hour:"1 pm",
+    event:""
+  },
+  {
+    hour:"2 pm",
+    event:""
+  },
+  {
+    hour:"3 pm",
+    event:""
+  },
+  {
+    hour:"4 pm",
+    event:""
+  },
+  {
+    hour:"5 pm",
+    event:""
+  },
+];
+// function to integrate the array and add HTML rows for each hour
+eachTime.forEach(function(timeBlock, index) {
+  var hourTime = timeBlock.hour;
+  var setColor = colorTime(hourTime);
+  var block =
+    '<div class="time-block" id="' +
+    index +
+    '"><div class="col-2 col-md-1 hour text-center py-3">' +
+    hourTime +
+    '</div><textarea class="col-8 col-md-10 description ' +
+    setColor +
+    '" rows="3">' +
+    timeBlock.event +
+    '</textarea><button class="btn saveBtn col-2 col-md-1" aria-label="save"><i class="fas fa-save" aria-hidden="true"></i></button></div>';
 
-  // TODO: Add a listener for click events on the save button. This code should
-  // use the id in the containing time-block as a key to save the user input in
-  // local storage. HINT: What does `this` reference in the click listener
-  // function? How can DOM traversal be used to get the "hour-x" id of the
-  // time-block containing the button that was clicked? How might the id be
-  // useful when saving the description in local storage?
-  
-
-save.forEach( function (saveInfo){
-  saveInfo.addEventListener("click",function(){
-    console.log("Button works")
-  })
+  $(".main").append(block);
 });
 
-  // TODO: Add code to apply the past, present, or future class to each time
-  // block by comparing the id to the current hour. HINTS: How can the id
-  // attribute of each time-block be used to conditionally add or remove the
-  // past, present, and future classes? How can Day.js be used to get the
-  // current hour in 24-hour time?
-  
-  // append, remove 
+// dayjs active clock
+function printDateTime(){
+  var date = dayjs().format("dddd, MMMM D YYYY, h:mm:ss a") 
+  dateTime.text(date);
+};
+printDateTime();
 
+// able to view setitems in local storage by getitem
+const TodoList = JSON.parse(localStorage.getItem("ToDo"));
+if (TodoList) {
+  eachTime = TodoList;
+} 
+// function to return past present or future, in css it'll change color based on the name
+function colorTime(hour) {
+    var currentHour = dayjs().format("h a")
 
-
-  // TODO: Add code to get any user input that was saved in localStorage and set
-
-  function saveStorage () {
-    saveStorage.setItem("myDay", JSON.stringify())
+    if(currentHour < hour){
+      return "future";
+    } else if (currentHour > hour){
+      return "past";
+    } else {
+      return "present";
+    }
   }
-  // the values of the corresponding textarea elements. HINT: How can the id
-  // attribute of each time-block be used to do this?
-  //
-  // TODO: Add code to display the current date in the header of the page.
+
+const storedData = JSON.parse(localStorage.getItem("textarea"));
+  if (storedData) {
+    eachTime = storedData
+  }
+
+  // this saves the user input
+$(".saveBtn").on("click",function (){
+  var timeBlockID = parseInt(
+    $(this)
+      .closest(".time-block")
+      .attr("id")
+  );
+  var userInput = $.trim(
+    $(this)
+      .parent()
+      .siblings(".description")
+      .val()
+  );
+  eachTime[timeBlockID].event = userInput;
+  
+  localStorage.setItem("textarea", JSON.stringify(eachTime));
+  console.log("saved")
+});
