@@ -4,8 +4,8 @@
 const input = document.getElementsByName("textarea")
 const dateTime = $('#dateTime');
 
-function printDateTime(){
-  var date = dayjs().format("dddd, MMMM D YYYY, h:mm:ss a") 
+function printDateTime() {
+  var date = dayjs().format("dddd, MMMM D YYYY, h:mm:ss a")
   dateTime.text(date);
 };
 printDateTime();
@@ -14,62 +14,75 @@ printDateTime();
 let eachTime = [
   {
     hour: "9 am",
+    interger: 1,
     event: ""
   },
   {
-    hour:"10 am",
-    event:""
+    hour: "10 am",
+    interger: 2,
+    event: ""
   },
   {
-    hour:"11 am",
-    event:""
+    hour: "11 am",
+    interger: 3,
+    event: ""
   },
   {
-    hour:"12 pm",
-    event:""
+    hour: "12 pm",
+    interger: 4,
+    event: ""
   },
   {
-    hour:"1 pm",
-    event:""
+    hour: "1 pm",
+    interger: 5,
+    event: ""
   },
   {
-    hour:"2 pm",
-    event:""
+    hour: "2 pm",
+    interger: 6,
+    event: ""
   },
   {
-    hour:"3 pm",
-    event:""
+    hour: "3 pm",
+    interger: 7,
+    event: ""
   },
   {
-    hour:"4 pm",
-    event:""
+    hour: "4 pm",
+    interger: 8,
+    event: ""
   },
   {
-    hour:"5 pm",
-    event:""
+    hour: "5 pm",
+    interger:9,
+    event: ""
   },
 ];
 // function to integrate the array and add HTML rows for each hour
-eachTime.forEach(function(timeBlock, index) {
-  var hourTime = timeBlock.hour;
-  var setColor = colorTime(hourTime);
-  var block =
-    '<div class="time-block" id="' +
-    index +
-    '"><div class="col-2 col-md-1 hour text-center py-3">' +
-    hourTime +
-    '</div><textarea class="col-8 col-md-10 description ' +
-    setColor +
-    '" rows="3">' +
-    timeBlock.event +
-    '</textarea><button class="btn saveBtn col-2 col-md-1" aria-label="save"><i class="fas fa-save" aria-hidden="true"></i></button></div>';
+function updateDOM() {
 
-  $(".main").append(block);
-});
+  eachTime.forEach(function (timeBlock, index) {
+    var hourTime = timeBlock.hour;
+    var setColor = colorTime(hourTime);
+    var block =
+      '<div class="time-block" id="' +
+      index +
+      '"><div class="col-2 col-md-1 hour text-center py-3">' +
+      hourTime +
+      '</div><textarea class="col-8 col-md-10 description ' +
+      setColor +
+      '" rows="3">' +
+      timeBlock.event +
+      '</textarea><button class="btn saveBtn col-2 col-md-1" aria-label="save"><i class="fas fa-save" aria-hidden="true"></i></button></div>';
+  
+    $(".main").append(block);
+  });
+}
+updateDOM();
 
 // dayjs active clock
-function printDateTime(){
-  var date = dayjs().format("dddd, MMMM D YYYY, h:mm:ss a") 
+function printDateTime() {
+  var date = dayjs().format("dddd, MMMM D YYYY, h:mm:ss a")
   dateTime.text(date);
 };
 printDateTime();
@@ -78,27 +91,28 @@ printDateTime();
 const TodoList = JSON.parse(localStorage.getItem("ToDo"));
 if (TodoList) {
   eachTime = TodoList;
-} 
+}
 // function to return past present or future, in css it'll change color based on the name
-function colorTime(hour) {
-    var currentHour = dayjs().format("h a")
 
-    if(currentHour < hour){
-      return "future";
-    } else if (currentHour > hour){
-      return "past";
-    } else {
-      return "present";
-    }
+function colorTime(hour) {
+  var currentHour = dayjs().format("h a")
+
+  if (currentHour < hour) {
+    return "future";
+  } else if (currentHour > hour) {
+    return "past";
+  } else {
+    return "present";
   }
+}
 
 const storedData = JSON.parse(localStorage.getItem("textarea"));
-  if (storedData) {
-    eachTime = storedData
-  }
+if (storedData) {
+  eachTime = storedData
+}
 
-  // this saves the user input
-$(".saveBtn").on("click",function (){
+// this saves the user input
+$(".saveBtn").on("click", function () {
   var timeBlockID = parseInt(
     $(this)
       .closest(".time-block")
@@ -111,7 +125,9 @@ $(".saveBtn").on("click",function (){
       .val()
   );
   eachTime[timeBlockID].event = userInput;
-  
-  localStorage.setItem("textarea", JSON.stringify(eachTime));
+
+  updateDOM();
+
+  localStorage.setItem("ToDo", JSON.stringify(eachTime));
   console.log("saved")
 });
