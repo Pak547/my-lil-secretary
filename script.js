@@ -11,9 +11,10 @@ function printDateTime() {
 printDateTime();
 // we want eachTime to have an empty value to check previous local storage before all the mumbo jumbo
 let eachTime = JSON.parse(localStorage.getItem("ToDo"));
-// checking if eachtime returns an empty then we run the array
-if(eachTime === undefined){
+
 // Array for each hour and empty string to input
+// runs empty values if theres nothing previously in the values
+if (!eachTime){
 eachTime = [
   {
     hour: 9,
