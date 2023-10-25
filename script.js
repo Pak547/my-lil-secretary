@@ -9,70 +9,67 @@ function printDateTime() {
   dateTime.text(date);
 };
 printDateTime();
-
+// we want eachTime to have an empty value to check previous local storage before all the mumbo jumbo
+let eachTime = JSON.parse(localStorage.getItem("ToDo"));
+// checking if eachtime returns an empty then we run the array
+if(eachTime === undefined){
 // Array for each hour and empty string to input
-let eachTime = [
+eachTime = [
   {
-    hour: "9 am",
-    interger: 1,
-    event: ""
+    hour: 9,
+    value: ""
   },
   {
-    hour: "10 am",
-    interger: 2,
-    event: ""
+    hour: 10,
+    value: ""
   },
   {
-    hour: "11 am",
-    interger: 3,
-    event: ""
+    hour: 11,
+    value: ""
   },
   {
-    hour: "12 pm",
-    interger: 4,
-    event: ""
+    hour: 12,
+    value: ""
   },
   {
-    hour: "1 pm",
-    interger: 5,
-    event: ""
+    hour:  13,
+    value: ""
   },
   {
-    hour: "2 pm",
-    interger: 6,
-    event: ""
+    hour: 14,
+    value: ""
   },
   {
-    hour: "3 pm",
-    interger: 7,
-    event: ""
+    hour: 15,
+    value: ""
   },
   {
-    hour: "4 pm",
-    interger: 8,
-    event: ""
+    hour: 16,
+    value: ""
   },
   {
-    hour: "5 pm",
-    interger:9,
-    event: ""
+    hour: 17,
+    value: ""
   },
 ];
+}
 // function to integrate the array and add HTML rows for each hour
 function updateDOM() {
 
   eachTime.forEach(function (timeBlock, index) {
-    var hourTime = timeBlock.hour;
-    var setColor = colorTime(hourTime);
+    var militaryTime = timeBlock.hour;
+    //  because it's time its easier to compare with object and integer
+    var timeText = dayjs().hour(militaryTime).format("h a");
+    var setColor = colorTime(militaryTime);
     var block =
       '<div class="time-block" id="' +
       index +
       '"><div class="col-2 col-md-1 hour text-center py-3">' +
-      hourTime +
+      timeText +
       '</div><textarea class="col-8 col-md-10 description ' +
       setColor +
       '" rows="3">' +
-      timeBlock.event +
+      timeBlock.value +
       '</textarea><button class="btn saveBtn col-2 col-md-1" aria-label="save"><i class="fas fa-save" aria-hidden="true"></i></button></div>';
   
     $(".main").append(block);
@@ -87,16 +84,10 @@ function printDateTime() {
 };
 printDateTime();
 
-// able to view setitems in local storage by getitem
-const TodoList = JSON.parse(localStorage.getItem("ToDo"));
-if (TodoList) {
-  eachTime = TodoList;
-}
+
 // function to return past present or future, in css it'll change color based on the name
-
 function colorTime(hour) {
-  var currentHour = dayjs().format("h a")
-
+  var currentHour = dayjs().hour();
   if (currentHour < hour) {
     return "future";
   } else if (currentHour > hour) {
@@ -106,11 +97,6 @@ function colorTime(hour) {
   }
 }
 
-const storedData = JSON.parse(localStorage.getItem("textarea"));
-if (storedData) {
-  eachTime = storedData
-}
-
 // this saves the user input
 $(".saveBtn").on("click", function () {
   var timeBlockID = parseInt(
@@ -118,16 +104,14 @@ $(".saveBtn").on("click", function () {
       .closest(".time-block")
       .attr("id")
   );
-  var userInput = $.trim(
-    $(this)
-      .parent()
-      .siblings(".description")
-      .val()
-  );
-  eachTime[timeBlockID].event = userInput;
+
+  var timeBlockElement = $(`#${timeBlockID}`);
+  var textareaElement = $(timeBlockElement ).children('textarea');
+  var userInputValue = $(textareaElement).val();
+// getting the value
+  eachTime[timeBlockID].value = userInputValue;
 
   updateDOM();
-
+// saving the item
   localStorage.setItem("ToDo", JSON.stringify(eachTime));
-  console.log("saved")
 });
